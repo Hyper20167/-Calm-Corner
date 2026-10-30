@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Corner 🩷</title>
+<style>
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff);
+  color:#604b78;
+  text-align:center;
+}
+header {
+  padding:30px 15px;
+  background:#ffffff99;
+}
+h1 { font-size:42px;margin:5px; }
+header p {font-size:17px;}
+nav {padding:12px;}
+nav button,.toy button {
+  border:0;
+  background:#c9a7ef;
+  color:white;
+  padding:12px 18px;
+  border-radius:20px;
+  cursor:pointer;
+  margin:5px;
+  font-size:15px;
+}
+main {
+  max-width:950px;
+  margin:auto;
+  padding:15px;
+}
+h2 {margin-top:25px;}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+.toy {
+  background:#ffffffc9;
+  padding:20px;
+  border-radius:25px;
+  box-shadow:0 5px 15px #9879a522;
+}
+.toy h3 {margin-top:5px;}
+.popgrid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.bubble {
+  border:0;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#f5a9d0;
+  box-shadow:inset 0 -5px 0 #d77eae;
+  cursor:pointer;
+}
+.bubble.popped {
+  background:#ead9f6;
+  box-shadow:inset 0 4px 5px #b8a0c9;
+}
+#spinner {
+  font-size:100px;
+  display:inline-block;
+  cursor:pointer;
+  user-select:none;
+}
+.spin {animation:spin 1s linear infinite;}
+@keyframes spin {
+  to {transform:rotate(360deg);}
+}
+#slime {
+  width:160px;
+  height:120px;
+  background:radial-gradient(circle at 35% 25%,#fff,#d89aff 40%,#a76be0);
+  border-radius:45% 55% 50% 50%;
+  margin:20px auto;
+  cursor:grab;
+  box-shadow:inset -8px -10px 15px #8650b8;
+  transition:transform .2s;
+  touch-action:none;
+}
+#slime:active {transform:scale(1.3,.8);}
+#sand {
+  background:#f8d7a8;
+  height:110px;
+  border-radius:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:35px;
+  cursor:crosshair;
+}
+#breathCircle {
+  width:110px;height:110px;
+  background:#b6a2ee;
+  border-radius:50%;
+  margin:20px auto;
+  transition:transform 4s ease-in-out;
+}
+#breathCircle.big {transform:scale(1.6);}
+footer {padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🩷 Calm Corner</h1>
+  <p>Your little place to relax, play and feel better.</p>
+  <p>✨ Take a break. You deserve it! ✨</p>
+</header>
+
+<nav>
+  <button onclick="document.getElementById('pops').scrollIntoView()">Pop It</button>
+  <button onclick="document.getElementById('spinnerToy').scrollIntoView()">Spinner</button>
+  <button onclick="document.getElementById('slimeToy').scrollIntoView()">Slime</button>
+  <button onclick="document.getElementById('breathing').scrollIntoView()">Breathe</button>
+</nav>
+
+<main>
+<h2>🌸 Choose your fidget toy!</h2>
+
+<div class="grid">
+
+<section class="toy" id="pops">
+<h3>🫧 Pop It</h3>
+<p>Pop all the bubbles!</p>
+<div class="popgrid" id="popgrid"></div>
+<button onclick="resetPop()">Reset bubbles</button>
+<p id="popcount">Popped: 0</p>
+</section>
+
+<section class="toy" id="spinnerToy">
+<h3>🌀 Fidget Spinner</h3>
+<p>Click to spin!</p>
+<div id="spinner" onclick="spin()">🌀</div>
+<p id="spinText">Ready?</p>
+</section>
+
+<section class="toy" id="slimeToy">
+<h3>🟣 Squishy Slime</h3>
+<p>Press and hold the slime!</p>
+<div id="slime" draggable="false"></div>
+<p>Squish it as much as you like!</p>
+</section>
+
+<section class="toy">
+<h3>🫧 Bubble Wrap</h3>
+<p>Pop the bubbles!</p>
+<div class="popgrid" id="wrapgrid"></div>
+<button onclick="resetWrap()">New bubble wrap</button>
+</section>
+
+<section class="toy">
+<h3>🏖️ Magic Sand</h3>
+<p>Click to make sand shapes!</p>
+<div id="sand" onclick="makeSand(event)">🏖️</div>
+<button onclick="document.getElementById('sand').innerHTML='🏖️'">Clear sand</button>
+</section>
+
+<section class="toy" id="breathing">
+<h3>🌬️ Breathing Exercise</h3>
+<p>Follow the circle.</p>
+<div id="breathCircle"></div>
+<p id="breathText">Press start!</p>
+<button onclick="startBreathing()">Start breathing</button>
+</section>
+
+</div>
+
+<section class="toy" style="margin-top:20px">
+<h3>🎵 Relaxing Sounds</h3>
+<p>Listen to gentle relaxing sounds.</p>
+<button onclick="toggleSound()" id="soundButton">Play relaxing sound</button>
+</section>
+
+</main>
+
+<footer>
+  Made with 🩷 at Calm Corner
+  <p>Remember to take little breaks!</p>
+</footer>
+
+<script>
+let popped=0;
+let wrapPopped=0;
+
+function createBubbles(id,count,type) {
+  const grid=document.getElementById(id);
+  grid.innerHTML='';
+  for(let i=0;i<count;i++) {
+    const b=document.createElement('button');
+    b.className='bubble';
+    b.setAttribute('aria-label','Pop bubble');
+    b.onclick=()=>{
+      if(b.classList.contains('popped')) return;
+      b.classList.add('popped');
+      if(type==='pop') {
+        popped++;
+        document.getElementById('popcount').textContent='Popped: '+popped;
+      } else {
+        wrapPopped++;
+      }
+    };
+    grid.appendChild(b);
+  }
+}
+function resetPop() {
+  popped=0;
+  document.getElementById('popcount').textContent='Popped: 0';
+  createBubbles('popgrid',20,'pop');
+}
+function resetWrap() {
+  wrapPopped=0;
+  createBubbles('wrapgrid',20,'wrap');
+}
+resetPop();
+resetWrap();
+
+let spinning=false;
+function spin() {
+  const s=document.getElementById('spinner');
+  if(spinning) return;
+  spinning=true;
+  s.classList.add('spin');
+  document.getElementById('spinText').textContent='Wheeeee!';
+  setTimeout(()=>{
+    s.classList.remove('spin');
+    spinning=false;
+    document.getElementById('spinText').textContent='Spin again!';
+  },3000);
+}
+
+const slime=document.getElementById('slime');
+slime.addEventListener('pointermove',e=>{
+  if(e.buttons) {
+    slime.style.transform='scale(1.35,.75) rotate('+
+    (e.movementX*2)+'deg)';
+  }
+});
+slime.addEventListener('pointerup',()=>{
+  slime.style.transform='';
+});
+
+function makeSand(e) {
+  const shapes=['⭐','💜','🌸','💎','🐚','🌈'];
+  document.getElementById('sand').innerHTML=
+  shapes[Math.floor(Math.random()*shapes.length)];
+}
+
+let breathing=false;
+async function startBreathing() {
+  if(breathing) return;
+  breathing=true;
+  const circle=document.getElementById('breathCircle');
+  const txt=document.getElementById('breathText');
+  for(let i=0;i<3 && breathing;i++) {
+    txt.textContent='Breathe in...';
+    circle.classList.add('big');
+    await new Promise(r=>setTimeout(r,4000));
+    if(!breathing) break;
+    txt.textContent='Breathe out...';
+    circle.classList.remove('big');
+    await new Promise(r=>setTimeout(r,4000));
+  }
+  circle.classList.remove('big');
+  txt.textContent='Well done! 🩷';
+  breathing=false;
+}
+
+// Gentle sound made by the browser
+let audio=null;
+let soundOn=false;
+let soundTimer=null;
+
+function toggleSound() {
+  const button=document.getElementById('soundButton');
+  if(soundOn) {
+    clearInterval(soundTimer);
+    if(audio) audio.close();
+    audio=null;
+    soundOn=false;
+    button.textContent='Play relaxing sound';
+    return;
+  }
+  const AudioContext=window.AudioContext||window.webkitAudioContext;
+  if(!AudioContext) {
+    button.textContent='Sounds not supported';
+    return;
+  }
+  audio=new AudioContext();
+  soundOn=true;
+  button.textContent='Stop relaxing sound';
+  function note() {
+    if(!audio || audio.state==='closed') return;
+    const oscillator=audio.createOscillator();
+    const gain=audio.createGain();
+    oscillator.frequency.value=261.63+Math.random()*100;
+    oscillator.type='sine';
+    gain.gain.setValueAtTime(.035,audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+1.5);
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+    oscillator.start();
+    oscillator.stop(audio.currentTime+1.5);
+  }
+  note();
+  soundTimer=setInterval(note,1800);
+}
+</script>
+</body>
+</html>
