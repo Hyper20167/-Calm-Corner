@@ -3,485 +3,372 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calm Corner 🩷</title>
-
 <style>
-* {box-sizing:border-box;}
-
-body {
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff);
-  color:#604b78;
-  text-align:center;
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff);
+ color:#604b78;text-align:center
 }
-
-header {
-  padding:30px 15px;
-  background:#ffffff99;
+header{padding:30px;background:#ffffffaa}
+h1{font-size:43px;margin:5px}
+nav{padding:15px;position:sticky;top:0;background:#fceafa;z-index:5}
+button{
+ border:0;background:#c49be9;color:white;
+ padding:11px 17px;border-radius:20px;
+ cursor:pointer;margin:5px;font-size:14px
 }
-
-h1 {font-size:42px;margin:5px;}
-
-header p {font-size:17px;}
-
-nav {padding:12px;}
-
-nav button,.toy button {
-  border:0;
-  background:#c9a7ef;
-  color:white;
-  padding:12px 18px;
-  border-radius:20px;
-  cursor:pointer;
-  margin:5px;
-  font-size:15px;
+button:hover{filter:brightness(.95);transform:scale(1.03)}
+main{max-width:1100px;margin:auto;padding:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.toy{
+ background:#ffffffdd;padding:20px;border-radius:25px;
+ box-shadow:0 5px 15px #9879a522;min-height:260px
 }
-
-main {
-  max-width:950px;
-  margin:auto;
-  padding:15px;
+.toy h3{margin-top:5px}
+.toy.zoomed{
+ position:fixed;inset:10px;z-index:999;
+ overflow:auto;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;
+ background:linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff)
 }
-
-h2 {margin-top:25px;}
-
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
+.toy.zoomed canvas{max-width:95%;max-height:55vh}
+.popgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.bubble{
+ border:0;aspect-ratio:1;border-radius:50%;
+ background:#f5a9d0;box-shadow:inset 0 -5px 0 #d77eae;
+ padding:0
 }
-
-.toy {
-  background:#ffffffc9;
-  padding:20px;
-  border-radius:25px;
-  box-shadow:0 5px 15px #9879a522;
-  transition:all .3s;
+.bubble.popped{background:#ead9f6;box-shadow:inset 0 4px 5px #b8a0c9}
+#spinner{font-size:100px;cursor:pointer;display:inline-block}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#slime{
+ width:160px;height:120px;margin:20px auto;
+ background:radial-gradient(circle at 35% 25%,white,#d89aff 40%,#a76be0);
+ border-radius:45% 55% 50% 50%;cursor:grab;
+ box-shadow:inset -8px -10px 15px #8650b8;touch-action:none
 }
-
-.toy h3 {margin-top:5px;}
-
-.popgrid {
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-}
-
-.bubble {
-  border:0;
-  aspect-ratio:1;
-  border-radius:50%;
-  background:#f5a9d0;
-  box-shadow:inset 0 -5px 0 #d77eae;
-  cursor:pointer;
-}
-
-.bubble.popped {
-  background:#ead9f6;
-  box-shadow:inset 0 4px 5px #b8a0c9;
-}
-
-#spinner {
-  font-size:100px;
-  display:inline-block;
-  cursor:pointer;
-  user-select:none;
-}
-
-.spin {animation:spin 1s linear infinite;}
-
-@keyframes spin {
-  to {transform:rotate(360deg);}
-}
-
-#slime {
-  width:160px;
-  height:120px;
-  background:radial-gradient(circle at 35% 25%,#fff,#d89aff 40%,#a76be0);
-  border-radius:45% 55% 50% 50%;
-  margin:20px auto;
-  cursor:grab;
-  box-shadow:inset -8px -10px 15px #8650b8;
-  transition:transform .2s;
-  touch-action:none;
-}
-
-#slime:active {transform:scale(1.3,.8);}
-
-#sand {
-  background:#f8d7a8;
-  height:110px;
-  border-radius:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:35px;
-  cursor:crosshair;
-}
-
-#breathCircle {
-  width:110px;
-  height:110px;
-  background:#b6a2ee;
-  border-radius:50%;
-  margin:20px auto;
-  transition:transform 4s ease-in-out;
-}
-
-#breathCircle.big {transform:scale(1.6);}
-
-footer {padding:30px;}
-
-/* ZOOM BUTTONS */
-
-.zoom-btn {
-  background:#a77be5 !important;
-  color:white;
-  border:0;
-  padding:12px 20px;
-  border-radius:20px;
-  cursor:pointer;
-  margin-top:15px;
-  font-size:15px;
-}
-
-/* FULL SCREEN GAME */
-
-.toy.zoomed {
-  position:fixed;
-  inset:10px;
-  z-index:9999;
-  overflow-y:auto;
-  margin:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff);
-  border:3px solid white;
-  border-radius:25px;
-}
-
-.toy.zoomed .popgrid {
-  max-width:450px;
-  width:100%;
-}
-
-.toy.zoomed #slime {
-  width:230px;
-  height:180px;
-}
-
-.toy.zoomed #spinner {
-  font-size:180px;
-}
-
-.toy.zoomed #breathCircle {
-  width:160px;
-  height:160px;
-}
-
-.toy.zoomed #sand {
-  width:85%;
-  height:220px;
-  font-size:65px;
-}
-
-.toy.zoomed .bubble {
-  min-width:35px;
-}
-
-.toy.zoomed .zoom-btn {
-  background:#e58dbd !important;
-}
-
+#breathCircle{width:110px;height:110px;background:#b6a2ee;border-radius:50%;margin:20px auto;transition:transform 4s}
+#breathCircle.big{transform:scale(1.6)}
+canvas{background:#fff4fb;border-radius:18px;width:100%;max-width:100%;touch-action:none}
+.playarea{width:100%;height:170px;border-radius:18px;background:#fff4fb;position:relative;overflow:hidden;touch-action:none}
+#water{height:190px;cursor:crosshair}
+#sand{background:#f8d7a8;height:120px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:35px;cursor:pointer}
+#balls{display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:wrap;min-height:120px}
+.ball{width:36px;height:36px;border-radius:50%;cursor:grab;box-shadow:inset -5px -5px 8px #0002}
+#beads{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:100px;align-items:center}
+.bead{width:34px;height:34px;border-radius:50%;cursor:grab}
+#liquid{font-size:45px;cursor:pointer;animation:bob 2s infinite alternate}
+@keyframes bob{to{transform:translateY(20px)}}
+footer{padding:30px}
 </style>
 </head>
-
 <body>
-
 <header>
-  <h1>🩷 Calm Corner</h1>
-  <p>Your little place to relax, play and feel better.</p>
-  <p>✨ Take a break. You deserve it! ✨</p>
+<h1>🩷 Calm Corner</h1>
+<p>Your little place to relax, play and feel better.</p>
+<p>✨ Take a break. You deserve it! ✨</p>
 </header>
 
 <nav>
-  <button onclick="document.getElementById('pops').scrollIntoView()">Pop It</button>
-  <button onclick="document.getElementById('spinnerToy').scrollIntoView()">Spinner</button>
-  <button onclick="document.getElementById('slimeToy').scrollIntoView()">Slime</button>
-  <button onclick="document.getElementById('breathing').scrollIntoView()">Breathe</button>
+<button onclick="document.getElementById('games').scrollIntoView()">🎮 All Games</button>
+<button onclick="randomToy()">🎲 Random Toy</button>
+<button onclick="toggleTheme()">🌙 Dark Mode</button>
 </nav>
 
 <main>
+<h2>🌸 Your Fidget Playground</h2>
+<p>Choose a toy and start playing!</p>
+<div class="grid" id="games">
 
-<h2>🌸 Choose your fidget toy!</h2>
-
-<div class="grid">
-
-<section class="toy" id="pops">
-<h3>🫧 Pop It</h3>
-<p>Pop all the bubbles!</p>
+<section class="toy" id="pop">
+<h3>🫧 Pop It</h3><p>Pop all the bubbles!</p>
 <div class="popgrid" id="popgrid"></div>
-<button onclick="resetPop()">Reset bubbles</button>
 <p id="popcount">Popped: 0</p>
+<button onclick="resetPop()">Reset</button>
 </section>
 
-<section class="toy" id="spinnerToy">
-<h3>🌀 Fidget Spinner</h3>
-<p>Click to spin!</p>
+<section class="toy">
+<h3>🌀 Fidget Spinner</h3><p>Click to spin!</p>
 <div id="spinner" onclick="spin()">🌀</div>
 <p id="spinText">Ready?</p>
 </section>
 
-<section class="toy" id="slimeToy">
-<h3>🟣 Squishy Slime</h3>
-<p>Press and hold the slime!</p>
-<div id="slime" draggable="false"></div>
-<p>Squish it as much as you like!</p>
+<section class="toy">
+<h3>🟣 Squishy Slime</h3><p>Press and drag the slime!</p>
+<div id="slime"></div><p>Squish it!</p>
 </section>
 
 <section class="toy">
-<h3>🫧 Bubble Wrap</h3>
-<p>Pop the bubbles!</p>
+<h3>🫧 Bubble Wrap</h3><p>Pop the bubbles!</p>
 <div class="popgrid" id="wrapgrid"></div>
-<button onclick="resetWrap()">New bubble wrap</button>
+<button onclick="resetWrap()">New wrap</button>
 </section>
 
 <section class="toy">
-<h3>🏖️ Magic Sand</h3>
-<p>Click to make sand shapes!</p>
-<div id="sand" onclick="makeSand(event)">🏖️</div>
-<button onclick="document.getElementById('sand').innerHTML='🏖️'">Clear sand</button>
+<h3>🏖️ Magic Sand</h3><p>Click to make shapes!</p>
+<div id="sand" onclick="makeSand()">🏖️</div>
+<button onclick="sand.innerHTML='🏖️'">Clear</button>
 </section>
 
-<section class="toy" id="breathing">
-<h3>🌬️ Breathing Exercise</h3>
-<p>Follow the circle.</p>
+<section class="toy">
+<h3>🌬️ Breathing Exercise</h3><p>Follow the circle.</p>
 <div id="breathCircle"></div>
 <p id="breathText">Press start!</p>
-<button onclick="startBreathing()">Start breathing</button>
+<button onclick="startBreathing()">Start</button>
+</section>
+
+<section class="toy">
+<h3>💧 Liquid Motion</h3>
+<p>Click to change the falling bubbles!</p>
+<div id="liquid" onclick="liquidMove()">🫧</div>
+<button onclick="liquidMove()">Change bubbles</button>
+</section>
+
+<section class="toy">
+<h3>📿 Fidget Beads</h3><p>Move the beads around!</p>
+<div id="beads"></div>
+</section>
+
+<section class="toy">
+<h3>🎨 Paint Mixer</h3><p>Choose two colors to mix!</p>
+<input type="color" id="color1" value="#ff75bd">
+<input type="color" id="color2" value="#9c70ed">
+<div id="paint" style="height:100px;border-radius:20px;margin:15px;background:#dd92d5"></div>
+<button onclick="mixPaint()">Mix colors</button>
+</section>
+
+<section class="toy">
+<h3>🧲 Magnetic Balls</h3><p>Move your mouse over the balls!</p>
+<div id="balls"></div>
+<button onclick="makeBalls()">New balls</button>
+</section>
+
+<section class="toy">
+<h3>🌊 Water Ripples</h3><p>Touch or click to make waves!</p>
+<canvas id="water" width="500" height="190"></canvas>
+</section>
+
+<section class="toy">
+<h3>🔪 Sand Cutting</h3><p>Drag your finger or mouse through the sand!</p>
+<canvas id="cut" width="500" height="170"></canvas>
+<button onclick="resetCut()">New sand</button>
+</section>
+
+<section class="toy">
+<h3>✨ Glow Drawing</h3><p>Draw with glowing colors!</p>
+<input type="color" id="glowColor" value="#c45cff">
+<canvas id="glow" width="500" height="170"></canvas>
+<button onclick="clearGlow()">Clear drawing</button>
+</section>
+
+<section class="toy">
+<h3>🔵 Marble Run</h3><p>Click to add a marble!</p>
+<div class="playarea" id="marbleArea" onclick="addMarble(event)">
+<div style="position:absolute;left:10%;top:35%;width:80%;height:8px;background:#c49be9;transform:rotate(12deg)"></div>
+<div style="position:absolute;left:10%;top:70%;width:80%;height:8px;background:#c49be9;transform:rotate(-12deg)"></div>
+</div>
+<button onclick="clearMarbles()">Clear</button>
 </section>
 
 </div>
 
 <section class="toy" style="margin-top:20px">
 <h3>🎵 Relaxing Sounds</h3>
-<p>Listen to gentle relaxing sounds.</p>
+<p>Listen to gentle relaxing tones.</p>
 <button onclick="toggleSound()" id="soundButton">Play relaxing sound</button>
 </section>
-
 </main>
 
-<footer>
-  Made with 🩷 at Calm Corner
-  <p>Remember to take little breaks!</p>
-</footer>
+<footer>Made with 🩷 at Calm Corner<p>Take little breaks and enjoy!</p></footer>
 
 <script>
-
+// POP IT
+function createBubbles(id,n,type){
+ const g=document.getElementById(id);g.innerHTML='';
+ for(let i=0;i<n;i++){
+  let b=document.createElement('button');b.className='bubble';
+  b.onclick=()=>{if(b.classList.contains('popped'))return;b.classList.add('popped');if(type==='pop'){popped++;document.getElementById('popcount').textContent='Popped: '+popped;}};
+  g.appendChild(b);
+ }
+}
 let popped=0;
-let wrapPopped=0;
+function resetPop(){popped=0;document.getElementById('popcount').textContent='Popped: 0';createBubbles('popgrid',20,'pop');}
+function resetWrap(){createBubbles('wrapgrid',20,'wrap');}
+resetPop();resetWrap();
 
-function createBubbles(id,count,type) {
-  const grid=document.getElementById(id);
-  grid.innerHTML='';
-
-  for(let i=0;i<count;i++) {
-    const b=document.createElement('button');
-    b.className='bubble';
-    b.setAttribute('aria-label','Pop bubble');
-
-    b.onclick=()=>{
-      if(b.classList.contains('popped')) return;
-
-      b.classList.add('popped');
-
-      if(type==='pop') {
-        popped++;
-        document.getElementById('popcount').textContent='Popped: '+popped;
-      } else {
-        wrapPopped++;
-      }
-    };
-
-    grid.appendChild(b);
-  }
-}
-
-function resetPop() {
-  popped=0;
-  document.getElementById('popcount').textContent='Popped: 0';
-  createBubbles('popgrid',20,'pop');
-}
-
-function resetWrap() {
-  wrapPopped=0;
-  createBubbles('wrapgrid',20,'wrap');
-}
-
-resetPop();
-resetWrap();
-
+// SPINNER
 let spinning=false;
-
-function spin() {
-  const s=document.getElementById('spinner');
-
-  if(spinning) return;
-
-  spinning=true;
-  s.classList.add('spin');
-
-  document.getElementById('spinText').textContent='Wheeeee!';
-
-  setTimeout(()=>{
-    s.classList.remove('spin');
-    spinning=false;
-    document.getElementById('spinText').textContent='Spin again!';
-  },3000);
+function spin(){
+ if(spinning)return;spinning=true;
+ spinner.classList.add('spin');spinText.textContent='Wheeeee!';
+ setTimeout(()=>{spinner.classList.remove('spin');spinning=false;spinText.textContent='Spin again!';},3000);
 }
 
-const slime=document.getElementById('slime');
+// SLIME
+const slimeToy=document.getElementById('slime');
+slimeToy.addEventListener('pointermove',e=>{if(e.buttons)slimeToy.style.transform='scale(1.35,.75) rotate('+(e.movementX*2)+'deg)';});
+['pointerup','pointerleave'].forEach(ev=>slimeToy.addEventListener(ev,()=>slimeToy.style.transform=''));
 
-slime.addEventListener('pointermove',e=>{
-  if(e.buttons) {
-    slime.style.transform='scale(1.35,.75) rotate('+
-    (e.movementX*2)+'deg)';
-  }
-});
+// SAND
+function makeSand(){const a=['⭐','💜','🌸','💎','🐚','🌈'];sand.innerHTML=a[Math.floor(Math.random()*a.length)];}
 
-slime.addEventListener('pointerup',()=>{
-  slime.style.transform='';
-});
-
-slime.addEventListener('pointerleave',()=>{
-  slime.style.transform='';
-});
-
-function makeSand(e) {
-  const shapes=['⭐','💜','🌸','💎','🐚','🌈'];
-  document.getElementById('sand').innerHTML=
-  shapes[Math.floor(Math.random()*shapes.length)];
-}
-
+// BREATHING
 let breathing=false;
-
-async function startBreathing() {
-  if(breathing) return;
-
-  breathing=true;
-
-  const circle=document.getElementById('breathCircle');
-  const txt=document.getElementById('breathText');
-
-  for(let i=0;i<3 && breathing;i++) {
-    txt.textContent='Breathe in...';
-    circle.classList.add('big');
-
-    await new Promise(r=>setTimeout(r,4000));
-
-    if(!breathing) break;
-
-    txt.textContent='Breathe out...';
-    circle.classList.remove('big');
-
-    await new Promise(r=>setTimeout(r,4000));
-  }
-
-  circle.classList.remove('big');
-  txt.textContent='Well done! 🩷';
-  breathing=false;
+async function startBreathing(){
+ if(breathing)return;breathing=true;
+ for(let i=0;i<3&&breathing;i++){
+  breathText.textContent='Breathe in...';breathCircle.classList.add('big');
+  await new Promise(r=>setTimeout(r,4000));
+  breathText.textContent='Breathe out...';breathCircle.classList.remove('big');
+  await new Promise(r=>setTimeout(r,4000));
+ }
+ breathCircle.classList.remove('big');breathText.textContent='Well done! 🩷';breathing=false;
 }
 
-// RELAXING SOUND
+// LIQUID MOTION
+function liquidMove(){liquid.innerHTML=['🫧','💧','🔵','🟣','💎','🌈'][Math.floor(Math.random()*6)];}
 
-let audio=null;
-let soundOn=false;
-let soundTimer=null;
+// FIDGET BEADS
+for(let i=0;i<15;i++){
+ let b=document.createElement('div');b.className='bead';
+ b.style.background=['#ff90c8','#a88aff','#83d9e9','#ffcf85'][i%4];
+ b.draggable=true;
+ b.ondragstart=e=>e.dataTransfer.setData('text/plain','bead');
+ beads.appendChild(b);
+}
+beads.ondragover=e=>e.preventDefault();
+beads.ondrop=e=>{e.preventDefault();const b=document.createElement('div');b.className='bead';b.style.background=['#ff90c8','#a88aff','#83d9e9','#ffcf85'][Math.floor(Math.random()*4)];beads.appendChild(b);};
 
-function toggleSound() {
-  const button=document.getElementById('soundButton');
-
-  if(soundOn) {
-    clearInterval(soundTimer);
-
-    if(audio) audio.close();
-
-    audio=null;
-    soundOn=false;
-    button.textContent='Play relaxing sound';
-    return;
-  }
-
-  const AudioContext=window.AudioContext||window.webkitAudioContext;
-
-  if(!AudioContext) {
-    button.textContent='Sounds not supported';
-    return;
-  }
-
-  audio=new AudioContext();
-  soundOn=true;
-  button.textContent='Stop relaxing sound';
-
-  function note() {
-    if(!audio || audio.state==='closed') return;
-
-    const oscillator=audio.createOscillator();
-    const gain=audio.createGain();
-
-    oscillator.frequency.value=261.63+Math.random()*100;
-    oscillator.type='sine';
-
-    gain.gain.setValueAtTime(.035,audio.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+1.5);
-
-    oscillator.connect(gain);
-    gain.connect(audio.destination);
-
-    oscillator.start();
-    oscillator.stop(audio.currentTime+1.5);
-  }
-
-  note();
-  soundTimer=setInterval(note,1800);
+// PAINT MIXER
+function hexRGB(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));}
+function mixPaint(){
+ let a=hexRGB(color1.value),b=hexRGB(color2.value);
+ paint.style.background='rgb('+a.map((v,i)=>Math.round((v+b[i])/2)).join(',')+')';
 }
 
-// ADD ZOOM BUTTON TO EVERY GAME
+// MAGNETIC BALLS
+function makeBalls(){
+ balls.innerHTML='';
+ for(let i=0;i<18;i++){
+  let b=document.createElement('div');b.className='ball';
+  b.style.background=['#ff83bd','#a38aff','#70d7e8','#ffcc79'][i%4];
+  b.onpointermove=()=>{b.style.transform='scale(1.5)';};
+  b.onpointerleave=()=>{b.style.transform='';};
+  balls.appendChild(b);
+ }
+}
+makeBalls();
 
-function addZoomButtons() {
+// WATER RIPPLES
+const waterCtx=water.getContext('2d');
+let ripples=[];
+water.addEventListener('pointerdown',e=>{
+ const r=water.getBoundingClientRect();
+ ripples.push({x:(e.clientX-r.left)*water.width/r.width,y:(e.clientY-r.top)*water.height/r.height,r:1});
+});
+function waterLoop(){
+ waterCtx.fillStyle='#e7f7ff';waterCtx.fillRect(0,0,500,190);
+ waterCtx.strokeStyle='#8acde8';waterCtx.lineWidth=3;
+ ripples.forEach(p=>{waterCtx.beginPath();waterCtx.arc(p.x,p.y,p.r,0,Math.PI*2);waterCtx.stroke();p.r+=1.5;});
+ ripples=ripples.filter(p=>p.r<100);
+ requestAnimationFrame(waterLoop);
+}
+waterLoop();
 
-  document.querySelectorAll('.toy').forEach(toy=>{
+// SAND CUTTING
+const cutCtx=cut.getContext('2d');
+function resetCut(){
+ cutCtx.fillStyle='#f8d7a8';cutCtx.fillRect(0,0,500,170);
+ for(let i=0;i<100;i++){cutCtx.fillStyle=['#edc68e','#ffe0ad','#f4ce98'][i%3];cutCtx.fillRect(Math.random()*500,Math.random()*170,3,3);}
+}
+resetCut();
+let cutting=false;
+cut.addEventListener('pointerdown',()=>cutting=true);
+cut.addEventListener('pointerup',()=>cutting=false);
+cut.addEventListener('pointerleave',()=>cutting=false);
+cut.addEventListener('pointermove',e=>{
+ if(!cutting)return;
+ const r=cut.getBoundingClientRect();
+ cutCtx.globalCompositeOperation='destination-out';
+ cutCtx.beginPath();cutCtx.arc((e.clientX-r.left)*500/r.width,(e.clientY-r.top)*170/r.height,15,0,Math.PI*2);cutCtx.fill();
+ cutCtx.globalCompositeOperation='source-over';
+});
 
-    const button=document.createElement('button');
+// GLOW DRAWING
+const glowCtx=glow.getContext('2d');
+let drawing=false,last=null;
+glow.addEventListener('pointerdown',e=>{drawing=true;last=getPoint(e,glow);});
+glow.addEventListener('pointerup',()=>drawing=false);
+glow.addEventListener('pointerleave',()=>drawing=false);
+glow.addEventListener('pointermove',e=>{
+ if(!drawing)return;
+ let p=getPoint(e,glow);
+ glowCtx.strokeStyle=glowColor.value;glowCtx.lineWidth=5;
+ glowCtx.shadowBlur=15;glowCtx.shadowColor=glowColor.value;
+ glowCtx.lineCap='round';glowCtx.beginPath();glowCtx.moveTo(last.x,last.y);glowCtx.lineTo(p.x,p.y);glowCtx.stroke();last=p;
+});
+function getPoint(e,c){let r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};}
+function clearGlow(){glowCtx.clearRect(0,0,500,170);}
 
-    button.className='zoom-btn';
-    button.textContent='🔍 Zoom In';
+// MARBLE RUN
+function addMarble(e){
+ let area=marbleArea,r=area.getBoundingClientRect();
+ let b=document.createElement('div');
+ b.style.cssText='position:absolute;width:19px;height:19px;border-radius:50%;background:#b78af3;left:'+(e.clientX-r.left-9)+'px;top:'+(e.clientY-r.top-9)+'px;box-shadow:inset -4px -4px 5px #7652aa';
+ area.appendChild(b);
+}
+function clearMarbles(){marbleArea.querySelectorAll('div:not([style*="height: 8px"])').forEach(x=>x.remove());}
 
-    button.onclick=()=>{
+// ZOOM BUTTONS
+document.querySelectorAll('.toy').forEach(toy=>{
+ let b=document.createElement('button');
+ b.textContent='🔍 Zoom In';
+ b.onclick=()=>{
+  toy.classList.toggle('zoomed');
+  b.textContent=toy.classList.contains('zoomed')?'✖ Close Zoom':'🔍 Zoom In';
+ };
+ toy.appendChild(b);
+});
 
-      toy.classList.toggle('zoomed');
-
-      if(toy.classList.contains('zoomed')) {
-        button.textContent='✖ Close Zoom';
-      } else {
-        button.textContent='🔍 Zoom In';
-      }
-
-    };
-
-    toy.appendChild(button);
-
-  });
-
+// RANDOM TOY
+function randomToy(){
+ let games=[...document.querySelectorAll('#games .toy')];
+ games[Math.floor(Math.random()*games.length)].scrollIntoView({behavior:'smooth'});
 }
 
-addZoomButtons();
+// DARK MODE
+let dark=false;
+function toggleTheme(){
+ dark=!dark;
+ document.body.style.background=dark?'linear-gradient(135deg,#252039,#39304f)':'linear-gradient(135deg,#ffe5f2,#e8dcff,#dff5ff)';
+ document.body.style.color=dark?'#f4e8ff':'#604b78';
+ document.querySelectorAll('.toy').forEach(t=>t.style.background=dark?'#514664':'#ffffffdd');
+}
 
+// SOUND
+let audio=null,soundOn=false,soundTimer=null;
+function toggleSound(){
+ if(soundOn){
+  clearInterval(soundTimer);audio.close();audio=null;soundOn=false;
+  soundButton.textContent='Play relaxing sound';return;
+ }
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC){soundButton.textContent='Sounds unavailable';return;}
+ audio=new AC();soundOn=true;soundButton.textContent='Stop relaxing sound';
+ function note(){
+  if(!audio||audio.state==='closed')return;
+  let o=audio.createOscillator(),g=audio.createGain();
+  o.frequency.value=261+Math.random()*100;o.type='sine';
+  g.gain.setValueAtTime(.025,audio.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+1.5);
+  o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+1.5);
+ }
+ note();soundTimer=setInterval(note,1800);
+}
 </script>
-
 </body>
 </html>
